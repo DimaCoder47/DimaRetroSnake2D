@@ -14,10 +14,9 @@ function placeFood() {
 
 function gameLoop() {
     // 1. DER TÜRSTEHER
-    if (isPaused) {
-        setTimeout(gameLoop, speed);
-        return;
-    }
+    if (isPaused) return;
+
+    isChangingDirection = false;
 
     let head = { x: snake[0].x, y: snake[0].y };
 
@@ -52,7 +51,50 @@ function gameLoop() {
         snake.pop();
     }
 
-    setTimeout(gameLoop, speed);
+    gameTimeout = setTimeout(gameLoop, speed);
+}
+
+function drawFood() {
+    const x = food.x * cellWidth;
+    const y = food.y * cellHeight;
+    const w = cellWidth;
+    const h = cellHeight;
+    
+    ctx.save();
+
+    // --- 1. FARB-LOGIK (Blinken & Phantom) ---
+    if (appleSpawnTimer > 0) {
+        ctx.fillStyle = "#FFFFFF"; // Weißes Blinken beim Erscheinen
+        appleSpawnTimer--;
+    } else {
+        // Wenn Score > 150, wird der Apfel leicht durchsichtig (Phantom)
+        ctx.fillStyle = (score >= 150) ? `rgba(238, 0, 0, ${phantomAlpha})` : foodColor;
+    }
+
+    // --- 2. DIE PIXEL-HERZFORM ZEICHNEN ---
+    
+    // Die Basis (Ein breites Rechteck für die oberen Rundungen)
+    ctx.fillRect(x + 1, y + 1, w - 2, h / 2); // Obere Hälfte fast voll
+
+    // Der untere Teil, der schmaler wird
+    ctx.fillRect(x + 2, y + h / 2, w - 4, h / 4); // Etwas schmaler
+    ctx.fillRect(x + 3, y + (3 * h / 4), w - 6, h / 4); // Ganz schmal (Spitze)
+
+    // --- 3. DIE EINKERBUNG OBEN (Um "N/H" Look zu vermeiden) ---
+    // Wir färben nur oben in der Mitte ein kleines Quadrat schwarz
+    ctx.fillStyle = "#080808"; // Hintergrundfarbe
+    const kerbSize = w * 0.2; // Größe der Einkerbung (20% der Zellbreite)
+    ctx.fillRect(x + (w / 2) - (kerbSize / 2), y + 1, kerbSize, h * 0.2);
+
+    // --- 4. DER LICHTREFLEX ---
+    if (appleSpawnTimer <= 0) {
+        ctx.fillStyle = "rgba(255, 255, 255, 0.7)"; // Halbtransparentes Weiß
+        const reflexSize = w * 0.15; // Reflexgröße relativ zur Zelle
+        // Ein Punkt oben links
+        ctx.fillRect(x + (w * 0.25), y + (h * 0.25), reflexSize, reflexSize);
+    }
+
+    ctx.restore();
 }
 
 function draw() {
@@ -117,13 +159,7 @@ function draw() {
     }
 
     // Apfel
-    if (appleSpawnTimer > 0) {
-        ctx.fillStyle = "#FFFFFF";
-        appleSpawnTimer--; // 
-    } else {
-        ctx.fillStyle = (score >= 150) ? `rgba(238, 0, 0, ${phantomAlpha})` : foodColor;
-    }
-    ctx.fillRect(food.x * cellWidth, food.y * cellHeight, cellWidth, cellHeight);
+    drawFood();
 
     // SCHLANGE 
     let sC = getSnakeColor(score, pulseValue);
@@ -229,28 +265,70 @@ function getSnakeColor(currentScore, pulse) {
     return '#32CD32';
 }
 
-// Funktion zum Umschalten der Pause
+// --- SPIEL-STEUERUNG ---
 function togglePause() {
     isPaused = !isPaused;
     const btn = document.getElementById('pause-btn');
     if (btn) {
         btn.textContent = isPaused ? "▶" : "II";
         btn.style.borderColor = isPaused ? "#EE0000" : "mediumblue";
+    } 
+    
+    if (!isPaused) {
+        clearTimeout(gameTimeout);
+        gameLoop();
+    }
+}
+
+function showHighscoreOverlay(finalScore) {
+    isPaused = true;
+    const overlay = document.getElementById('highscore-overlay');
+    const scoreTextElement = document.getElementById('final-score-text');
+
+    if (scoreTextElement) {
+        scoreTextElement.innerText = "Du hast " + finalScore + " Punkte erreicht!";
+    }
+
+    scoreTextElement.style.animationDuration = (finalScore >= 110) ? "1s" : "2s";
+
+    if (overlay) {
+        overlay.style.display = 'flex';
+        setTimeout(() => overlay.classList.add('visible'), 10);
     }
 }
 
 function resetGameAfterHighscore() {
     const overlay = document.getElementById('highscore-overlay');
     if (overlay) {
-        overlay.style.display = 'none';
+        overlay.classList.remove('visible');
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            quickReset();
+        }, 500);
+    } else {
+        quickReset();
     }
-    quickReset();
-    const scoreDisplay = document.getElementById('score-display');
-    if (scoreDisplay) scoreDisplay.innerText = "0";
-    isPaused = false;
 }
 
-// Der Start-Schuss
-placeFood();
-gameLoop();
+function quickReset() {
+    score = 0;
+    direction = "RIGHT";
+    isPaused = false;
+    isChangingDirection = false;
+    snake = [{ x: 7, y: 7 }];
+    
+    document.getElementById('score-display').innerText = "Score: 0";
+    
+    canvas.style.borderColor = 'mediumblue';
+    canvas.style.boxShadow = '0 0 20px rgba(0, 0, 255, 0.3)';
+    document.body.style.backgroundColor = '#080808';
+    
+    // 4. Neustart
+    placeFood();
+    clearTimeout(gameTimeout);
+    gameLoop();
+}
+
+// INITIALER START 
+quickReset();
 draw();
