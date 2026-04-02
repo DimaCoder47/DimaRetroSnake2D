@@ -39,7 +39,7 @@ body {
     height: 100vh;
     height: 100svh;
 
-    aspect-ratio: 800 / 1240;
+    aspect-ratio: 800 / 1350;
 
     max-width: 100vw;
     max-height: 100vh;
@@ -47,12 +47,14 @@ body {
     box-sizing: border-box;
     overflow: hidden;
     margin: 0 auto;
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 canvas {
     display: block;
     width: 100%;
-    flex-grow: 1;
+    min-height: 0;
+    flex-shrink: 1;;
     border: 6px solid mediumblue;
     box-shadow: 0 0 20px rgba(0, 0, 255, 0.4);
     background-color: #080808;
@@ -193,4 +195,51 @@ canvas {
     background-color: mediumblue;
     transform: scale(0.9);
     box-shadow: 0 0 15px rgba(0, 0, 255, 0.8);
+}
+
+#mobile-controls {
+    display: flex;
+    justify-content: center; 
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 90px;
+    padding: 10px;
+    padding: 0 20px; /* Sicherheitsabstand zu den Displaykanten */
+    background-color: #000;
+    flex-shrink: 0;
+}
+
+.ctrl-btn {
+    width: 70px;
+    height: 70px;
+    background: #000;
+    border: 3px solid mediumblue; 
+    color: white;
+    border-radius: 8px;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.ctrl-btn:active {
+    background: mediumblue;
+    box-shadow: 0 0 20px rgba(0, 0, 255, 0.6);
+}
+
+/* Entfernt den Fokus-Rahmen für die Spiel-Buttons */
+.ctrl-btn:focus, 
+#pause-btn:focus,
+#again-btn:focus {
+    outline: none;
+}
+
+/* Optional: Verhindert den blauen/weißen Rand beim Klicken (Chrome/Safari) */
+.ctrl-btn, #pause-btn, #again-btn {
+    -webkit-tap-highlight-color: transparent;
 }
