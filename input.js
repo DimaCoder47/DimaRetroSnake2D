@@ -57,34 +57,20 @@ document.addEventListener('touchend', (e) => {
         }
     }, { passive: true });
 
-// BUTTONS (TOUCH-INTERFACE)
-function toggleControls() {
-    const controls = document.getElementById('controls');
-    const toggleBtn = document.getElementById('toggle-ui-btn');
-    if (!controls || !toggleBtn) return;
-
-    const isHidden = controls.classList.toggle('hidden');
-    toggleBtn.textContent = isHidden ? "○ ○ ○" : "● ● ●";
-    toggleBtn.style.opacity = isHidden ? "0.2" : "0.4";
-}
-
+    // Wartet, bis das Dokument geladen ist
 document.addEventListener('DOMContentLoaded', () => {
-    const buttonConfigs = [
-        { id: 'up-btn', action: () => handleDirectionInput('UP') },
-        { id: 'down-btn', action: () => handleDirectionInput('DOWN') },
-        { id: 'left-btn', action: () => handleDirectionInput('LEFT') },
-        { id: 'right-btn', action: () => handleDirectionInput('RIGHT') },
-        { id: 'pause-btn', action: () => togglePause() },
-        { id: 'toggle-ui-btn', action: () => toggleControls() }
-    ];
+    const pauseBtn = document.getElementById('pause-btn');
 
-    buttonConfigs.forEach(cfg => {
-        const el = document.getElementById(cfg.id);
-        if (el) {
-            el.addEventListener('pointerdown', (e) => {
-                e.preventDefault();
-                cfg.action();
-            });
-        }
-    });
+    if (pauseBtn) {
+        // Für PC (Mausklick)
+        pauseBtn.addEventListener('click', (e) => {
+            togglePause();
+        });
+
+        // Für Handy (reagiert sofort ohne Verzögerung)
+        pauseBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Verhindert doppelte Klicks und Scrollen
+            togglePause();
+        }, { passive: false });
+    }
 });
