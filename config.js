@@ -19,14 +19,10 @@ let isPaused = false;
 let isChangingDirection = false;
 let speed = 180;
 let gameTimeout;
+let phantomAlpha = 1.0;
+let glitchStartTime = 0;
+
 
 let snake = [{ x: 7, y: 7 }];
 let food = { x: 5, y: 5 };
 const foodColor = '#EE0000';
-
-document.addEventListener('DOMContentLoaded', () => {
-    const hsDisplay = document.getElementById('highscore-display');
-    if (hsDisplay) {
-        hsDisplay.innerText = "Best: " + highscore;
-    }
-});
