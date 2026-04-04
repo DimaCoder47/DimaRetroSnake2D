@@ -50,7 +50,7 @@ body {
     padding-bottom: env(safe-area-inset-bottom);
 }
 
-canvas {
+#canvas {
     display: block;
     width: 100%;
     min-height: 0;
@@ -242,4 +242,18 @@ canvas {
 /* Optional: Verhindert den blauen/weißen Rand beim Klicken (Chrome/Safari) */
 .ctrl-btn, #pause-btn, #again-btn {
     -webkit-tap-highlight-color: transparent;
+}
+
+/* TEST-VERSION: Wir erzwingen die Sichtbarkeit */
+#game-container {
+    position: relative;
+    /* overflow: hidden;  <-- TESTWEISE AUSKOMMENTIEREN, falls der Rahmen abgeschnitten wird */
+}
+
+/* Der Container braucht overflow: visible, damit der Schein nach außen glühen kann */
+#game-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: visible; /* WICHTIG: Damit der Rahmen nicht abgeschnitten wird */
 }
