@@ -26,24 +26,24 @@ function gameLoop() {
     if (direction === "UP") head.y--;
     if (direction === "DOWN") head.y++;
 
-// 3. KOLLISION (Wand & Körper)
-if (head.x < 0 || head.x >= cols || head.y < 0 || head.y >= rows ||
-    snake.some(part => part.x === head.x && part.y === head.y)) {
+    // 3. KOLLISION (Wand & Körper)
+    if (head.x < 0 || head.x >= cols || head.y < 0 || head.y >= rows ||
+        snake.some(part => part.x === head.x && part.y === head.y)) {
 
-    let savedHighscore = parseInt(localStorage.getItem('snakeHighscore')) || 0;
+        let savedHighscore = parseInt(localStorage.getItem('snakeHighscore')) || 0;
 
-    if (score > savedHighscore) {
-        highscore = score;
-        localStorage.setItem('snakeHighscore', score);
-        
-        const hsDisplay = document.getElementById('highscore-display');
-        if (hsDisplay) {
-            hsDisplay.innerText = "Best: " + score;
+        if (score > savedHighscore) {
+            highscore = score;
+            localStorage.setItem('snakeHighscore', score);
+
+            const hsDisplay = document.getElementById('highscore-display');
+            if (hsDisplay) {
+                hsDisplay.innerText = "Best: " + score;
+            }
         }
+        showHighscoreOverlay(score);
+        return;
     }
-    showHighscoreOverlay(score);
-    return;
-}
 
     // 4. BEWEGUNG & ESSEN
     snake.unshift(head);
@@ -111,7 +111,7 @@ function draw() {
     let bgColor = '#080808';
     let isPhantom = false;
     let showStroke = false;
-    let phantomAlpha = 1.0; 
+    let phantomAlpha = 1.0;
     let currentGapsActive = false;
 
     // Phantom & Rahmen Logik (Ab 105 / 120)
@@ -130,79 +130,79 @@ function draw() {
     // Raster ausblenden (Score 120-124)
     let gridAlpha = (score < 120) ? 1.0 : (score <= 124 ? pulseValue : 0);
 
-    
-    
-    // -------------------------------
-    
-    
 
-    
-    
+
+    // -------------------------------
+
+
+
+
+
     // !!! ANIMATION BORDER !!! ///
-    
+
     // --- RAHMEN-LOGIK (Sanftes Gleitlicht ab 150) ---
 
 
 
 
 
-if (score >= 150) {
-    // 1. STUFEN-LOGIK (0 bei 150, 1 bei 155, 2 bei 160...)
-    let evolutionLevel = Math.floor((score - 150) / 5);
-    
-    // 2. DYNAMISCHE ALPHA-WERTE (Sehr geringer Start)
-    // Startet bei 0.05 (fast unsichtbar) und steigt pro Stufe um 0.15
-    let mainAlpha = Math.min(0.05 + (evolutionLevel * 0.15), 1.0);
-    let baseAlpha = Math.min(0.02 + (evolutionLevel * 0.03), 0.15);
+    if (score >= 150) {
+        // 1. STUFEN-LOGIK (0 bei 150, 1 bei 155, 2 bei 160...)
+        let evolutionLevel = Math.floor((score - 150) / 5);
 
-    // 3. GESCHWINDIGKEIT & FARBE
-    // Wird mit jeder Stufe etwas schneller (60 -> 50 -> 40...)
-    let speed = Math.max(60 - (evolutionLevel * 8), 20);
-    let angle = (currentTime / speed) % 360;
+        // 2. DYNAMISCHE ALPHA-WERTE (Sehr geringer Start)
+        // Startet bei 0.05 (fast unsichtbar) und steigt pro Stufe um 0.15
+        let mainAlpha = Math.min(0.05 + (evolutionLevel * 0.15), 1.0);
+        let baseAlpha = Math.min(0.02 + (evolutionLevel * 0.03), 0.15);
 
-    // Das Grün wird mit der Zeit gesättigter
-    let greenValue = Math.min(100 + (evolutionLevel * 30), 255);
-    let limeColor = `rgba(0, ${greenValue}, 0, ${mainAlpha})`;
-    let darkBase = `rgba(0, 40, 0, ${baseAlpha})`;
+        // 3. GESCHWINDIGKEIT & FARBE
+        // Wird mit jeder Stufe etwas schneller (60 -> 50 -> 40...)
+        let speed = Math.max(60 - (evolutionLevel * 8), 20);
+        let angle = (currentTime / speed) % 360;
 
-    // 4. DER GRADIENT (Ein schmaler, wandernder Lichtstrahl)
-    canvas.style.borderImageSource = `conic-gradient(from ${angle}deg, 
+        // Das Grün wird mit der Zeit gesättigter
+        let greenValue = Math.min(100 + (evolutionLevel * 30), 255);
+        let limeColor = `rgba(0, ${greenValue}, 0, ${mainAlpha})`;
+        let darkBase = `rgba(0, 40, 0, ${baseAlpha})`;
+
+        // 4. DER GRADIENT (Ein schmaler, wandernder Lichtstrahl)
+        canvas.style.borderImageSource = `conic-gradient(from ${angle}deg, 
         ${darkBase} 0%, 
         ${darkBase} 12%,
         ${limeColor} 15%, 
         ${limeColor} 17%, 
         ${darkBase} 20%,
         ${darkBase} 100%)`;
-    
-    canvas.style.borderImageSlice = "1";
-    canvas.style.borderWidth = "6px";
-    canvas.style.borderStyle = "solid";
-    
-    // Schatten komplett deaktiviert für den puristischen Look
-    canvas.style.boxShadow = "none";
+
+        canvas.style.borderImageSlice = "1";
+        canvas.style.borderWidth = "6px";
+        canvas.style.borderStyle = "solid";
+
+        // Schatten komplett deaktiviert für den puristischen Look
+        canvas.style.boxShadow = "none";
 
 
 
 
 
 
-    // -------------------------------
-    
-    // WICHTIG: Gaps für die Schlange aktivieren
-    currentGapsActive = true; 
-} 
+        // -------------------------------
+
+        // WICHTIG: Gaps für die Schlange aktivieren
+        currentGapsActive = true;
+    }
     else if (score >= 135 && score < 149) {
         canvas.style.borderImageSource = "none";
         // Zwischen 135 und 149: Komplett unsichtbar
         canvas.style.borderColor = 'transparent';
         canvas.style.boxShadow = 'none';
-    } 
+    }
     else if (score >= 130 && score < 135) {
         canvas.style.borderImageSource = "none";
         // Warn-Blinken (Blau)
         canvas.style.borderColor = `rgba(0, 0, 205, ${pulseValue})`;
         canvas.style.boxShadow = `0 0 20px rgba(0, 0, 255, ${pulseValue * 0.3})`;
-    } 
+    }
     else if (score < 130) {
         canvas.style.borderImageSource = "none";
         canvas.style.borderColor = 'mediumblue';
@@ -210,11 +210,11 @@ if (score >= 150) {
     }
 
     // INTERGRUNDFARBE LOGIK (Inkl. Pulsieren 135-139)
-// HINTERGRUNDFARBE (Zurück auf Standard)
-  if (score >= 145) {
+    // HINTERGRUNDFARBE (Zurück auf Standard)
+    if (score >= 145) {
         bgColor = '#000000';
     } else if (score >= 140 && score < 145) {
-        let pulseDark = Math.floor(8 * (1 - pulseValue)); 
+        let pulseDark = Math.floor(8 * (1 - pulseValue));
         bgColor = `rgb(${pulseDark}, ${pulseDark}, ${pulseDark})`;
     } else {
         bgColor = '#080808';
@@ -240,18 +240,18 @@ if (score >= 150) {
     // Apfel zeichnen
     drawFood();
 
-// SCHLANGE FARB-LOGIK
+    // SCHLANGE FARB-LOGIK
     let sC;
-    let currentStrokeAlpha = 0; 
+    let currentStrokeAlpha = 0;
 
     if (score >= 120) {
         sC = bgColor;
-        currentStrokeAlpha = pulseValue * 0.8; 
+        currentStrokeAlpha = pulseValue * 0.8;
         showStroke = true;
-    } 
+    }
     else {
         sC = getSnakeColor(score, pulseValue);
-        currentStrokeAlpha = 0.8; 
+        currentStrokeAlpha = 0.8;
     }
 
     const isGlitchPhase = (score >= 150 && (currentTime - glitchStartTime) < 10000);
@@ -384,27 +384,29 @@ function showHighscoreOverlay(finalScore) {
     isPaused = true;
     clearTimeout(gameTimeout);
 
-    // 1. Die Elemente aus dem HTML holen
     const overlay = document.getElementById('highscore-overlay');
     const titleElement = document.querySelector('#highscore-overlay h1');
     const scoreTextElement = document.getElementById('final-score-text');
 
-    // 2. Titel anpassen (Sieg oder Normal)
     if (titleElement) {
-        titleElement.innerText = (finalScore >= 170) ? "LIMIT ERREICHT!" : "NEUER REKORD!";
+        if (finalScore >= highscore) {
+            titleElement.innerText = "NEUER REKORD!";
+        } else {
+            titleElement.innerText = "GAME OVER";
+        }
+
+        if (finalScore >= 170) {
+            titleElement.innerText = "LIMIT ERREICHT!";
+        }
     }
 
-    // 3. Score-Text anpassen
     if (scoreTextElement) {
-        scoreTextElement.innerText = "Du hast " + finalScore + " Punkte erreicht!";
-        // Animation beschleunigen bei hohem Score
-        scoreTextElement.style.animationDuration = (finalScore >= 110) ? "1s" : "2s";
+        scoreTextElement.innerText = finalScore + " Punkte";
+        scoreTextElement.style.animationDuration = (finalScore >= 170) ? "1s" : "2s";
     }
 
-    // 4. Das Overlay sichtbar machen
     if (overlay) {
         overlay.style.display = 'flex';
-        // Kurze Verzögerung für den CSS-Fade-In (Transition)
         setTimeout(() => overlay.classList.add('visible'), 10);
     }
 }
