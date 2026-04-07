@@ -166,7 +166,7 @@ body {
 .overlay-content h1 {
     color: #FFD700;
     font-size: 2.8rem;
-    margin: 0 0 10px 0;
+    margin: 0 0 0 0;
     letter-spacing: 3px;
     text-shadow: 2px 2px 0px rgba(0, 0, 225, 0.8);
 }
@@ -174,7 +174,6 @@ body {
 #final-score-text {
     color: #00FF00;
     font-size: 1.6rem;
-    margin-bottom: 20px;
 }
 
 #again-btn {
