@@ -13,7 +13,7 @@ function placeFood() {
 
 function gameLoop() {
     // DER TÜRSTEHER
-    if (isPaused) return;
+    if (!window.gameStarted || isPaused) return;
 
     isChangingDirection = false;
 
@@ -100,6 +100,11 @@ function drawFood() {
 }
 
 function draw() {
+    if (!window.gameStarted) {
+            requestAnimationFrame(draw); 
+            return; 
+    }
+
     const currentTime = Date.now();
     const time = currentTime / 200;
     const pulseValue = (Math.sin(time) + 1) / 2;
@@ -398,10 +403,10 @@ function resetGameAfterHighscore() {
 
 function quickReset() {
     score = 0;
-    direction = "RIGHT";
+    direction = "DOWN";
     isPaused = false;
     isChangingDirection = false;
-    snake = [{ x: 7, y: 7 }];
+    snake = [{ x: 2, y: 2 }];
 
     highscore = parseInt(localStorage.getItem('snakeHighscore')) || 0;
     const hsDisplay = document.getElementById('highscore-display');
@@ -421,6 +426,79 @@ function quickReset() {
     gameLoop();
 }
 
-// INITIALER START 
-quickReset();
+// Der Play-Button
+document.getElementById('play-button').addEventListener('click', () => {
+    const startScreen = document.getElementById('start-screen');
+    
+    startScreen.classList.add('hidden');
+    
+    setTimeout(() => {
+        window.gameStarted = true; 
+        isPaused = false;
+        
+        quickReset(); 
+        
+    }, 400); 
+});
+
+// INITIALER START
 draw();
+
+function updateSystemBar() {
+    // 1. Uhrzeit & Datum
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const timeStr = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    const dateTimeElement = document.getElementById('date-time');
+    if (dateTimeElement) dateTimeElement.innerText = `${dateStr} | ${timeStr}`;
+
+    // 2. Akku-Stand (Battery API)
+    if (navigator.getBattery) {
+        navigator.getBattery().then(battery => {
+            const updateBattery = () => {
+                const battElement = document.getElementById('battery-status');
+                if (battElement) battElement.innerText = `BAT: ${Math.round(battery.level * 100)}%`;
+            };
+            updateBattery();
+            battery.addEventListener('levelchange', updateBattery);
+        });
+    }
+}
+
+// Alle 10 Sekunden aktualisieren (reicht für die Uhrzeit)
+setInterval(updateSystemBar, 10000);
+updateSystemBar(); // Einmal sofort beim Start
+
+// In deiner JS-Funktion animateStartScreenBorder:
+function animateStartScreen() {
+    const startScreen = document.getElementById('start-screen');
+    
+    // Nur animieren, wenn der Start-Screen auch sichtbar ist
+    if (!startScreen || startScreen.classList.contains('hidden')) {
+        requestAnimationFrame(animateStartScreen);
+        return;
+    }
+
+    const time = Date.now();
+    const angle = (time / 20) % 360; // Geschwindigkeit der Drehung
+
+    // Die Farben in deinem neuen Electric Cyan Look
+    const deepBlue = "#001a33"; 
+    const electricCyan = "#00d4ff";
+
+    startScreen.style.borderImageSource = `conic-gradient(from ${angle}deg, 
+        ${deepBlue} 0%, 
+        ${electricCyan} 5%, 
+        ${electricCyan} 10%, 
+        ${deepBlue} 20%, 
+        ${deepBlue} 50%, 
+        ${electricCyan} 55%, 
+        ${electricCyan} 60%, 
+        ${deepBlue} 70%, 
+        ${deepBlue} 100%)`;
+
+    requestAnimationFrame(animateStartScreen);
+}
+
+// Den Motor starten
+animateStartScreen();
