@@ -23,6 +23,7 @@ body {
 
 /* LAYOUT CONTAINER */
 #ui-wrapper {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -53,6 +54,7 @@ body {
     border: 6px solid mediumblue;
     box-shadow: 0 0 20px rgba(0, 0, 255, 0.4);
     background-color: #080808;
+    z-index: 1;
 }
 
 /* SCORE, BEST und PAUSE */
@@ -116,7 +118,7 @@ body {
     width: 70px;
     height: 70px;
     background: #000;
-    border: 3px solid mediumblue; 
+    border: 3px solid mediumblue;
     color: white;
     border-radius: 8px;
     font-size: 1.5rem;
@@ -128,7 +130,8 @@ body {
     -webkit-user-select: none;
 }
 
-.ctrl-btn:active, #pause-btn:active {
+.ctrl-btn:active,
+#pause-btn:active {
     background: mediumblue;
     box-shadow: 0 0 20px rgba(0, 0, 255, 0.8);
     transform: scale(0.9);
@@ -191,4 +194,251 @@ body {
     background: #FFD700;
     color: #080808;
     box-shadow: 0 0 20px rgba(0, 0, 255, 0.6);
+}
+
+/* StartBildschirm */
+.game-title {
+    position: relative;
+    color: #39FF14;
+    font-size: 4.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1;
+    margin-bottom: 20px;
+    letter-spacing: 4px;
+
+    /* Die Profi-Animation: Ruhiger, aber mit fiesen 'Zuckungen' */
+    animation: proFlicker 4s infinite;
+
+    /* Der 'aufgebauschte' Neon-Glow */
+    text-shadow: 0 0 10px rgba(57, 255, 20, 0.8),
+        0 0 20px rgba(57, 255, 20, 0.4);
+}
+
+.game-title::before,
+.game-title::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.6;
+    animation: colorVibration 0.1s infinite;
+}
+
+@keyframes proFlicker {
+
+    0%,
+    35%,
+    39%,
+    41%,
+    44%,
+    100% {
+        opacity: 1;
+        filter: brightness(100%) saturate(100%);
+    }
+
+    36%,
+    38%,
+    42% {
+        opacity: 0.4;
+        filter: brightness(150%) saturate(150%);
+    }
+
+    37%,
+    43% {
+        opacity: 0.1;
+    }
+}
+
+/* Wir registrieren die Variable, damit CSS sie animieren kann */
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+/* Start-Screen */
+#start-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 6px solid transparent;
+    border-image-slice: 1;
+    z-index: 1000;
+    background: #080808;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: opacity 0.8s ease-out;
+    visibility: visible;
+}
+
+@keyframes rotateBorder {
+    to {
+        --angle: 360deg;
+    }
+}
+
+#start-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+
+#start-screen::after {
+    content: " ";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    /* Ein feines Karomuster */
+    background-image:
+        linear-gradient(rgba(57, 255, 20, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(57, 255, 20, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+
+    pointer-events: none;
+    z-index: 200;
+}
+
+.subtitle {
+    color: #00d4ff;
+    font-size: 1.0rem;
+    margin-top: 15px;
+
+    width: 100%;
+    text-align: center;
+    display: block;
+
+    letter-spacing: 3px;
+    font-weight: bold;
+    text-transform: uppercase;
+
+    /* "Matrix-Glow"*/
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.8),
+        0 0 10px rgba(0, 212, 255, 0.4);
+
+    animation: subFlicker 5s infinite;
+    opacity: 0.9;
+
+    margin-left: 0;
+    margin-right: 0
+}
+
+/* Ein ruhigeres Flackern als beim Haupttitel, damit es nicht nervt */
+@keyframes subFlicker {
+
+    0%,
+    94%,
+    96%,
+    100% {
+        opacity: 0.9;
+    }
+
+    95%,
+    97% {
+        opacity: 0.4;
+    }
+}
+
+#play-button {
+    margin-top: 50px;
+    padding: 15px 40px;
+    background: rgba(57, 255, 20, 0.05);
+    border: 3px solid #39FF14;
+    color: #39FF14;
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    font-family: inherit;
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+}
+
+#play-button:hover {
+    background: #39FF14;
+    color: #080808;
+    box-shadow: 0 0 30px #39FF14;
+    transform: scale(1.05);
+}
+
+/* Der scannende Lichtstreifen */
+#play-button::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 30%;
+    /* Etwas breiterer Reflex */
+    height: 200%;
+    /* Weicher, edler Lichtverlauf */
+    background: linear-gradient(to right,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.6) 50%,
+            rgba(255, 255, 255, 0) 100%);
+    transform: rotate(25deg);
+    animation: buttonScan 4s infinite ease-in-out;
+}
+
+@keyframes buttonScan {
+    0% {
+        left: -60%;
+    }
+
+    20% {
+        left: 120%;
+    }
+
+    100% {
+        left: 120%;
+    }
+}
+
+/* Das Pseudo-Element, das die Schlange enthält */
+.snake-placeholder {
+    display: inline-block;
+    font-size: 0.8em;
+    vertical-align: baseline;
+    position: relative;
+    top: -0.05em;
+    margin-right: -0.1em;
+    animation: proFlicker 4s infinite;
+    filter: grayscale(100%) brightness(1.2) sepia(100%) saturate(1000%) hue-rotate(80deg) drop-shadow(0 0 5px #39FF14);
+}
+
+/* System Bar oben */
+.system-bar {
+    position: absolute;
+    top: 15px;
+    width: 100%;
+    padding: 0 25px;
+    display: flex;
+    justify-content: space-between;
+    color: #00d4ff;
+    font-size: 0.85em;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+    opacity: 0.8;
+}
+
+/* Copyright */
+.copyright {
+    position: absolute;
+    bottom: 20px;
+    color: #00d4ff;
+    opacity: 0.5;
+    font-size: 0.75em;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
+    text-transform: uppercase;
 }
