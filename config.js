@@ -7,8 +7,8 @@ canvas.height = 1200;
 
 const rows = 30;
 const cols = 20;
-const cellWidth = canvas.width / cols;
-const cellHeight = canvas.height / rows;
+let cellWidth = canvas.width / cols;
+let cellHeight = canvas.height / rows;
 
 let appleSpawnTimer = 0;
 let score = 0;
