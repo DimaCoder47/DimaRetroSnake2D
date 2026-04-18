@@ -435,8 +435,13 @@ document.getElementById('play-button').addEventListener('click', () => {
     } else if (docElm.webkitRequestFullscreen) {
         docElm.webkitRequestFullscreen();
     }
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    // 2. Deine bestehende Logik
+    cellWidth = canvas.width / cols;
+    cellHeight = canvas.height / rows;
+
     const startScreen = document.getElementById('start-screen');
     startScreen.classList.add('hidden');
     
