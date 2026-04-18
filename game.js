@@ -428,29 +428,30 @@ function quickReset() {
 
 // Der Play-Button
 document.getElementById('play-button').addEventListener('click', () => {
-    // 1. Fullscreen sofort beim Klick erzwingen
     const docElm = document.documentElement;
     if (docElm.requestFullscreen) {
         docElm.requestFullscreen();
     } else if (docElm.webkitRequestFullscreen) {
         docElm.webkitRequestFullscreen();
     }
-    
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
 
-    cellWidth = canvas.width / cols;
-    cellHeight = canvas.height / rows;
-
-    const startScreen = document.getElementById('start-screen');
-    startScreen.classList.add('hidden');
-    
     setTimeout(() => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        canvas.style.height = window.innerHeight + "px";
+        canvas.style.width = "100%"; 
+
+        cellWidth = canvas.width / cols;
+        cellHeight = canvas.height / rows;
+
+        const startScreen = document.getElementById('start-screen');
+        startScreen.classList.add('hidden');
+        
         window.gameStarted = true; 
         isPaused = false;
-        
         quickReset(); 
-    }, 400); 
+    }, 200);
 });
 
 // INITIALER START
