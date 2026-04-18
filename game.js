@@ -428,8 +428,16 @@ function quickReset() {
 
 // Der Play-Button
 document.getElementById('play-button').addEventListener('click', () => {
+    // 1. Fullscreen sofort beim Klick erzwingen
+    const docElm = document.documentElement;
+    if (docElm.requestFullscreen) {
+        docElm.requestFullscreen();
+    } else if (docElm.webkitRequestFullscreen) {
+        docElm.webkitRequestFullscreen();
+    }
+
+    // 2. Deine bestehende Logik
     const startScreen = document.getElementById('start-screen');
-    
     startScreen.classList.add('hidden');
     
     setTimeout(() => {
@@ -437,7 +445,6 @@ document.getElementById('play-button').addEventListener('click', () => {
         isPaused = false;
         
         quickReset(); 
-        
     }, 400); 
 });
 
