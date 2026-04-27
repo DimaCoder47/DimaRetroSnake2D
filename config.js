@@ -26,6 +26,3 @@ let glitchStartTime = 0;
 let snake = [{ x: 7, y: 7 }];
 let food = { x: 5, y: 5 };
 const foodColor = '#EE0000';
-export const GAME_CONFIG = {
-    useFullscreen: true,
-};
