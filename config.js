@@ -5,8 +5,8 @@ const ctx = canvas.getContext('2d');
 canvas.width = 800;
 canvas.height = 1200;
 
-const rows = 30;
-const cols = 20;
+let rows = 30;
+let cols = 20;
 let cellWidth = canvas.width / cols;
 let cellHeight = canvas.height / rows;
 
